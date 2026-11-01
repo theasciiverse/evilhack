@@ -1,0 +1,25 @@
+#!/bin/sh
+# Starts EvilHack from an av install (lib/ next to this script) or a
+# system package (this script as /usr/bin/evilhack, game in
+# /usr/lib/evilhack).
+#
+# The playground, where EvilHack keeps saves, bones, scores and locks, is
+# the player's own: ${XDG_DATA_HOME:-~/.local/share}/evilhack. Its game
+# data files are links into the install, so an update takes effect at
+# once; the score files and saves are real files. Options: ~/.evilhackrc.
+# av links ~/.local/bin/evilhack to this file, so follow that link first.
+self=$(readlink "$0" 2>/dev/null || printf '%s' "$0")
+dir=$(cd "$(dirname "$self")" && pwd)
+lib="$dir/lib"
+[ -x "$lib/evilhack" ] || lib=/usr/lib/evilhack   # system package
+
+play="${XDG_DATA_HOME:-$HOME/.local/share}/evilhack"
+mkdir -p "$play/save" "$play/dumplog" || exit 1
+for f in nhdat license symbols sysconf serverseed; do
+  ln -sfn "$lib/$f" "$play/$f"
+done
+for f in record logfile xlogfile perm; do
+  [ -e "$play/$f" ] || : > "$play/$f"
+done
+
+NETHACKDIR="$play" exec "$lib/evilhack" "$@"

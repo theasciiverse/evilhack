@@ -1,0 +1,48 @@
+# EvilHack system configuration for the Asciiverse edition.
+#
+# This is upstream's sys/unix/sysconf with the settings for a single local
+# player: the server-only lines (live log, HTML dumps, gdb paths, the
+# hardfought support line) are left out and dumplogs go to the player's
+# own playground. The game settings and default options are upstream's.
+# Your own options belong in ~/.evilhackrc, not here: this file is
+# replaced when the game is updated.
+
+# Anyone may use explore mode (X). Debug (wizard) mode is for nobody.
+WIZARDS=
+EXPLORERS=*
+
+# Use the player name for matching WIZARDS, EXPLORERS and SHELLERS.
+CHECK_PLNAME=1
+
+# No limit on games at once.
+MAXPLAYERS=0
+
+SUPPORT=See https://github.com/k21971/EvilHack and #evilhack on Libera IRC
+
+# Extra entropy for the random seed (see upstream's sysconf).
+SERVERSEED=100
+SERVERSEED_FILE=serverseed
+
+ACCESSIBILITY=1
+
+# High score list: entries per player, total, and minimum points.
+PERSMAX=50
+ENTRYMAX=2000
+POINTSMIN=1
+
+MAX_STATUENAME_RANK=50
+
+# A dumplog of every finished game, in the playground's dumplog folder.
+DUMPLOGFILE=dumplog/%t.evil.txt
+
+# Default options (upstream's); override them in ~/.evilhackrc.
+OPTIONS=disclose:yi ya yv yg yc yo
+OPTIONS=bones,color,lit_corridor,dark_room,autodig,autoopen
+OPTIONS=pickup_burden:unencumbered,sparkle:5
+OPTIONS=!autopickup,hilite_pet,hilite_pile,time,use_darkgray
+OPTIONS=msg_window:reversed,number_pad:0,sortloot:full
+OPTIONS=menu_objsyms,perm_invent,hitpointbar,quick_farsight
+OPTIONS=realtime:wallclock time
+
+MSGTYPE=hide "Unknown command *"
+MSGTYPE=alert "The (couatl|.*eel|kraken) swings itself around you!"

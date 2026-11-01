@@ -1,0 +1,57 @@
+# System packages (.deb, .rpm, .apk, Arch) for EvilHack, built by nfpm from
+# the same static Linux build as the av archive. The release workflow sets
+# VERSION, RELEASE (our packaging release) and ARCH (amd64 or arm64).
+#
+# Same layout idea as the av archive: the game and its data in
+# /usr/lib/evilhack, and the start script as /usr/bin/evilhack, which gives
+# each player their own playground in ~/.local/share/evilhack. So no
+# setgid binary and no shared /var/games folder. No .desktop file on
+# purpose: av is the one place titles are started from.
+name: evilhack
+arch: ${ARCH}
+platform: linux
+version: ${VERSION}
+release: ${RELEASE}
+section: games
+priority: optional
+maintainer: Asciiverse <packages@asciiverse.sh>
+vendor: Asciiverse
+homepage: https://github.com/theasciiverse/evilhack
+license: NGPL
+description: |
+  A much harder NetHack variant.
+  EvilHack builds on NetHack 3.6 with tougher, smarter monsters, new races,
+  roles and items, drawing on GruntHack, SporkHack and other variants.
+  EvilHack by k21971, packaged by Asciiverse.
+contents:
+  - src: asciiverse/evilhack
+    dst: /usr/bin/evilhack
+    file_info: { mode: 0755 }
+  - src: stage/lib/evilhack
+    dst: /usr/lib/evilhack/evilhack
+    file_info: { mode: 0755 }
+  - src: stage/lib/recover
+    dst: /usr/lib/evilhack/recover
+    file_info: { mode: 0755 }
+  - src: stage/lib/nhdat
+    dst: /usr/lib/evilhack/nhdat
+  - src: stage/lib/license
+    dst: /usr/lib/evilhack/license
+  - src: stage/lib/symbols
+    dst: /usr/lib/evilhack/symbols
+  - src: stage/lib/serverseed
+    dst: /usr/lib/evilhack/serverseed
+  - src: stage/lib/sysconf
+    dst: /usr/lib/evilhack/sysconf
+  - src: doc/evilhack.6
+    dst: /usr/share/man/man6/evilhack.6
+  - src: doc/Guidebook.txt
+    dst: /usr/share/doc/evilhack/Guidebook.txt
+  - src: doc/evilhack-changelog.md
+    dst: /usr/share/doc/evilhack/changelog.md
+  - src: LICENSE
+    dst: /usr/share/doc/evilhack/copyright
+  - src: README.md
+    dst: /usr/share/doc/evilhack/README.md
+  - src: PATCHES.md
+    dst: /usr/share/doc/evilhack/PATCHES.md

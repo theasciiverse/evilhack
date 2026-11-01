@@ -67,3 +67,10 @@ CLAUDE.md
 dat/md*
 .claude/
 doc/claude/
+
+# Asciiverse
+/stage/
+/dist/
+/build/
+!/asciiverse/evilhack
+!/CLAUDE.md

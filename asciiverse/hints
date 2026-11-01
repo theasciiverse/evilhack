@@ -1,0 +1,61 @@
+#
+# Asciiverse hints for EvilHack: a single-user build that can live anywhere.
+# Based on sys/unix/hints/linux, without the public-server parts
+# (DGAMELAUNCH, LIVELOG_ENABLE, DUMPHTML, TTY_TILES_ESCCODES).
+#
+# HACKDIR is only the default playground; the start script sets
+# NETHACKDIR to the player's own (~/.local/share/evilhack), which holds
+# saves, bones, scores and locks. There is no VAR_PLAYGROUND, and sysconf
+# is read from the playground ("sysconf", relative), so nothing needs to
+# be setgid or shared.
+#
+# asciiverse/build.sh passes on the make command line:
+#   AV_CURSESLIB  curses libraries for this platform
+#   AV_LFLAGS     link flags (-static on Alpine, -arch on macOS)
+#   CC            the compiler, with -arch on macOS
+#   INSTDIR/VARDIR/SHELLDIR for `make install` into build/install
+#
+#-PRE
+PREFIX=/usr
+HACKDIR=/usr/lib/evilhack
+SHELLDIR =
+INSTDIR = $(HACKDIR)
+VARDIR = $(HACKDIR)
+POSTINSTALL=cp dat/serverseed $(INSTDIR)/serverseed
+
+CFLAGS=-O2 -I../include -DNOTPARMDECL -fno-common
+CFLAGS+=-DDLB
+CFLAGS+=-DSYSCF -DSECURE
+CFLAGS+=-DTIMED_DELAY
+CFLAGS+=-DHACKDIR=\"$(HACKDIR)\"
+CFLAGS+=-DCONFIG_ERROR_SECURE=FALSE
+CFLAGS+=-DCURSES_GRAPHICS
+CFLAGS+=-DPANICLOG_FMT2
+CFLAGS+=-DFCMASK=0644
+CFLAGS+=-DSCORE_ON_BOTL
+CFLAGS+=-DREALTIME_ON_BOTL
+CFLAGS+=-DDUMPLOG
+
+CCISCLANG := $(shell echo `$(CC) --version` | grep clang)
+ifneq "$(CCISCLANG)" ""
+CFLAGS+=-Wno-deprecated-non-prototype -Wno-unknown-warning-option
+else
+CFLAGS+=-Wno-old-style-definition -Wno-unused-result -Wno-format-overflow
+endif
+
+YACC=bison -y
+LEX=flex
+
+LINK=$(CC)
+LFLAGS=$(AV_LFLAGS)
+
+WINSRC = $(WINTTYSRC) $(WINCURSESSRC)
+WINOBJ = $(WINTTYOBJ) $(WINCURSESOBJ)
+WINLIB = $(WINTTYLIB) $(WINCURSESLIB)
+WINTTYLIB=$(AV_CURSESLIB)
+
+CHOWN=true
+CHGRP=true
+VARDIRPERM = 0755
+VARFILEPERM = 0644
+GAMEPERM = 0755
