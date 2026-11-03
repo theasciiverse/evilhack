@@ -11,7 +11,7 @@
 set -eu
 
 if [ -f /etc/alpine-release ]; then
-  apk add --no-cache build-base bison flex ncurses-dev ncurses-static >/dev/null
+  apk add --no-cache build-base linux-headers bison flex ncurses-dev ncurses-static >/dev/null
   curses="-lncursesw"
   lflags="-static"
 elif [ "$(uname)" = Darwin ]; then

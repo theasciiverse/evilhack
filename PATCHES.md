@@ -17,6 +17,15 @@ configuration, in files of our own under `asciiverse/`.
 - Saves are not compressed: upstream's build calls `/bin/gzip`, which
   isn't at that path on every system (macOS).
 - Linux builds are static (Alpine); macOS uses the system's ncurses.
+- The game links only the curses library `asciiverse/build.sh` passes
+  (`WINLIB`): upstream's `Makefile.src` adds `-lncursesw`, which macOS
+  doesn't have.
+- `HAVE_TPUTS` is set for every build: `include/system.h` assumes
+  `term.h` declares `tputs` only on glibc, so musl got the old
+  declaration, which conflicts with ncurses'. On Linux also
+  `_GNU_SOURCE`, which Alpine's fortify headers need before `curses.h`.
+  The Alpine build installs `linux-headers` for `sys/vt.h`, which
+  `sys/share/unixtty.c` uses on Linux.
 
 ## A playground for each player
 

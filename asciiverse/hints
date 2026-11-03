@@ -35,6 +35,14 @@ CFLAGS+=-DFCMASK=0644
 CFLAGS+=-DSCORE_ON_BOTL
 CFLAGS+=-DREALTIME_ON_BOTL
 CFLAGS+=-DDUMPLOG
+# ncurses' term.h declares tputs; system.h assumes that only on glibc,
+# so musl (Alpine) would get the old conflicting declaration
+CFLAGS+=-DHAVE_TPUTS
+# Alpine's fortify headers want mempcpy declared before curses.h pulls
+# them in, which musl does only with _GNU_SOURCE
+ifeq ($(shell uname -s),Linux)
+CFLAGS+=-D_GNU_SOURCE
+endif
 
 CCISCLANG := $(shell echo `$(CC) --version` | grep clang)
 ifneq "$(CCISCLANG)" ""
@@ -51,8 +59,9 @@ LFLAGS=$(AV_LFLAGS)
 
 WINSRC = $(WINTTYSRC) $(WINCURSESSRC)
 WINOBJ = $(WINTTYOBJ) $(WINCURSESOBJ)
-WINLIB = $(WINTTYLIB) $(WINCURSESLIB)
-WINTTYLIB=$(AV_CURSESLIB)
+# Makefile.src sets WINCURSESLIB to -lncursesw after these hints, which
+# macOS does not have, so the link uses only what build.sh passes
+WINLIB = $(AV_CURSESLIB)
 
 CHOWN=true
 CHGRP=true
